@@ -1,12 +1,13 @@
 import {Routes, Route } from 'react-router-dom';
 import Login from './Pages/Login';
-import Navbar from './components/Navbar';
-import Dashboard from './Pages/Dashboard';
-import Addlog from './Pages/AddLog';
-import { Authcontext } from '../context/authcontext';
+import Navbar from './components/Navbar.jsx';
+import Dashboard from './Pages/Dashboard.jsx';
+import Addlog from './Pages/Addlog.jsx';
+import { Authcontext } from '../context/authcontext.jsx';
 import { useContext } from 'react';
-import Homepage from './Pages/Homepage';
-import History from './Pages/History';
+import Homepage from './Pages/Homepage.jsx';
+import History from './Pages/History.jsx';
+import Analytic from './Pages/Analytic.jsx';
 
 function App() {
   const { Authuser }  = useContext(Authcontext);
@@ -28,6 +29,7 @@ function App() {
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Addlog" element={<Addlog />} />
           <Route path="/History" element={<History />} />
+          <Route path="/Analytic" element={<Analytic />} />
           
           {/* 404 Page (Optional) */}
           <Route path="*" element={<div className="text-center mt-20">Page Not Found</div>} />

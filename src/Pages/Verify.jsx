@@ -12,7 +12,7 @@ const Verify = () => {
     const verifyToken = async () => {
       try {
         // Crucial: withCredentials ensures the cookie from the backend is saved
-        const res = await axios.post('http://localhost:5000/api/verify', 
+        const res = await axios.post('/api/verify', 
           { token }, 
           { withCredentials: true } 
         );
