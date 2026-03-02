@@ -34,9 +34,10 @@ const checkauth = async () => {
 const login = async(credentials) =>{
      try{
       const { data } = await axios.post("/api/users/login" , credentials);
-      console.log(data)
+      console.log("user login data" , data)
       if(data.success){
         setAuthuser(data.user);
+        console.log("Magic link sent succssfully")
       }
      }catch(error){
      console.log(error.message);

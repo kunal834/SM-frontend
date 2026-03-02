@@ -18,16 +18,23 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
+  
+  try {
+    // 1. Call the actual login function from your context
+    // This will send the POST request to /api/users/login
+    await login(formData); 
     
-    // Simulate API delay for realism
-    setTimeout(() => {
-      login(formData);
-      setIsLoading(false);
-      setIsSent(true);
-    }, 1200);
-  };
+    // 2. Only show the "Check your inbox" screen if successful
+    setIsLoading(false);
+    setIsSent(true);
+  } catch (err) {
+    setIsLoading(false);
+    console.error("Login failed:", err);
+    alert("Could not send magic link. Please check your connection.");
+  }
+};
 
   return (
     <div className="min-h-screen bg-white flex">
