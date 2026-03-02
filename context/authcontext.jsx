@@ -10,7 +10,7 @@ export const Authcontext = createContext();
 
 export const  AuthProvider = ({children}) =>{
 const [Authuser, setAuthuser] = useState();
-const [IsLoading, setIsLoading] = useState(false)
+const [IsLoading, setIsLoading] = useState(true)
 
 
 useEffect(() => {
@@ -19,8 +19,10 @@ useEffect(() => {
 },[])
 
 const checkauth = async () => {
+  setIsLoading(true);
     try {
       const { data } = await axios.get("/api/users/me");
+      console.log("me data" , data)
       if (data.success) {
         setAuthuser(data.user);
       }
@@ -31,19 +33,21 @@ const checkauth = async () => {
     }
   };
 
-const login = async(credentials) =>{
-     try{
+const login = async(credentials) => {
+     try {
       const { data } = await axios.post("/api/users/login" , credentials);
-      console.log("user login data" , data)
-      if(data.success){
-        setAuthuser(data.user);
-        console.log("Magic link sent succssfully")
+      console.log("daata login" , data)
+      if(data.success) {
+        // We DON'T set the user here. 
+        // We wait for them to click the email link.
+        console.log("Magic link sent successfully");
+        return data; // Return to the component to show the "Check Inbox" UI
       }
-     }catch(error){
-     console.log(error.message);
+     } catch(error) {
+       console.log(error.message);
+       throw error; // Throw so the UI can show an error message
      }
 }
-
 const logout = async() =>{
   try{
    const {data} = await axios.get("/api/users/logout");
