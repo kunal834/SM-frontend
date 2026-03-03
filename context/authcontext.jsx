@@ -36,7 +36,9 @@ const checkauth = async () => {
 
 const login = async(credentials) => {
   try {
-    const { data } = await axios.post("/api/users/login", credentials);
+   const { data } = await axios.post("/api/users/login", credentials, {
+  timeout: 10000 // 10 seconds
+});
     if(data.success) {
       console.log("login data" , data)
       return data; 
