@@ -34,19 +34,21 @@ const checkauth = async () => {
   };
 
 const login = async(credentials) => {
-     try {
-      const { data } = await axios.post("/api/users/login" , credentials);
-      console.log("daata login" , data)
-      if(data.success) {
-        // We DON'T set the user here. 
-        // We wait for them to click the email link.
-        console.log("Magic link sent successfully");
-        return data; // Return to the component to show the "Check Inbox" UI
-      }
-     } catch(error) {
-       console.log(error.message);
-       throw error; // Throw so the UI can show an error message
-     }
+  try {
+    const { data } = await axios.post("/api/users/login", credentials);
+    if(data.success) {
+      console.log("login data" , data)
+      return data; 
+    } else {
+      // If the backend returns success: false, throw to trigger the catch block
+      throw new Error(data.message || "Failed to send link");
+    }
+  } catch(error) {
+    // Log the actual response error if available, otherwise the generic message
+    const errorMsg = error.response?.data?.message || error.message;
+    console.error("Context Login Error:", errorMsg);
+    throw new Error(errorMsg); 
+  }
 }
 const logout = async() =>{
   try{

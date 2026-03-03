@@ -17,22 +17,24 @@ const Login = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
   setIsLoading(true);
   
   try {
-    // 1. Call the actual login function from your context
-    // This will send the POST request to /api/users/login
-    await login(formData); 
+    // Wait for the login to complete
+    const result = await login(formData); 
     
-    // 2. Only show the "Check your inbox" screen if successful
-    setIsLoading(false);
-    setIsSent(true);
+    // Only proceed to success screen if we didn't throw an error
+    if (result) {
+      setIsSent(true);
+    }
   } catch (err) {
+    console.error("Login component caught error:", err.message);
+    alert(err.message || "Could not send magic link.");
+  } finally {
+    // This block ALWAYS runs, ensuring the "Generating link..." text goes away
     setIsLoading(false);
-    console.error("Login failed:", err);
-    alert("Could not send magic link. Please check your connection.");
   }
 };
 
