@@ -20,19 +20,16 @@ const Login = () => {
  const handleSubmit = async (e) => {
   e.preventDefault();
   setIsLoading(true);
-  
   try {
-    const result = await login(formData); 
-    // If you are using Redux, result might be the action object
-    // Use optional chaining: result?.payload?.success
-    if (result?.success) {
+    const result = await login(formData);
+    if (result?.success) { // Use ?. to safely check properties
       setIsSent(true);
     }
   } catch (err) {
-    console.error("Login failed:", err);
+    alert(err.message || "Something went wrong.");
   } finally {
-    // This MUST be here to un-stick the button
-    setIsLoading(false);
+    // THIS IS THE FIX: This runs no matter what (success OR failure)
+    setIsLoading(false); 
   }
 };
 
