@@ -20,18 +20,19 @@ useEffect(() => {
 
 const checkauth = async () => {
   setIsLoading(true);
-    try {
-      const { data } = await axios.get("/api/users/me");
-      console.log("me data" , data)
-      if (data.success) {
-        setAuthuser(data.user);
-      }
-    } catch (error) {
-      setAuthuser(null);
-    } finally {
-      setIsLoading(false);
+  try {
+    const { data } = await axios.get("/api/users/me");
+    // Using ?. prevents the "reading payload of undefined" crash
+    if (data?.success) { 
+      setAuthuser(data.user);
     }
-  };
+  } catch (error) {
+    setAuthuser(null);
+    console.error("Auth check failed:", error.response?.status);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
 const login = async(credentials) => {
   try {
