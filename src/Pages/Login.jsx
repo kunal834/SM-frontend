@@ -22,18 +22,16 @@ const Login = () => {
   setIsLoading(true);
   
   try {
-    // Wait for the login to complete
     const result = await login(formData); 
-    
-    // Only proceed to success screen if we didn't throw an error
-    if (result) {
+    // If you are using Redux, result might be the action object
+    // Use optional chaining: result?.payload?.success
+    if (result?.success) {
       setIsSent(true);
     }
   } catch (err) {
-    console.error("Login component caught error:", err.message);
-    alert(err.message || "Could not send magic link.");
+    console.error("Login failed:", err);
   } finally {
-    // This block ALWAYS runs, ensuring the "Generating link..." text goes away
+    // This MUST be here to un-stick the button
     setIsLoading(false);
   }
 };
