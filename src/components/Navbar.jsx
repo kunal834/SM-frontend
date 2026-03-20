@@ -31,7 +31,7 @@ const Navbar = () => {
   const authLinks = [
     { name: 'Dashboard', path: '/Dashboard' },
     { name: 'History', path: '/history' },
-    { name: 'Analytics', path: '/analytics' },
+    { name: 'Analytics', path: '/Analytic' },
   ];
 
   return (

@@ -39,6 +39,7 @@ const login = async(credentials) => {
    const { data } = await axios.post("/api/users/login", credentials, {
   timeout: 40000 // 10 seconds
 });
+   console.log("token value" , data.MagicToken)
     if(data.success) {
       console.log("login data" , data)
       return data; 

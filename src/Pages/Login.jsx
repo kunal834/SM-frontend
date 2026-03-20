@@ -71,7 +71,7 @@ const Login = () => {
                   <input 
                     type="text" 
                     name="name"
-                    required
+                    // required
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all placeholder:text-slate-400"
@@ -83,7 +83,7 @@ const Login = () => {
                   <input 
                     type="number" 
                     name="age"
-                    required
+                    // required
                     value={formData.age}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all"
