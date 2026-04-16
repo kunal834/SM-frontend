@@ -41,11 +41,11 @@ const Navbar = () => {
           
           {/* Brand Logo */}
           <Link to={isLoggedIn ? "/" : "/"} className="flex-shrink-0 flex items-center group">
-            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center mr-2 group-hover:bg-teal-700 transition-colors">
-              <span className="text-white text-xs font-bold">S</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              Sug<span className="text-teal-600">mon</span>
+           
+           <img src="/log.png" className="w-16 h-16"  alt="Logo" />
+           
+            <span className="text-xl font-bold tracking-tight text-slate-900 mb-2">
+              Flytics<span className="text-teal-600"></span>
             </span>
           </Link>
 

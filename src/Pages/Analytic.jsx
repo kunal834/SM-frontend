@@ -3,44 +3,42 @@ import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { 
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, 
-  CartesianGrid, BarChart, Bar, Cell 
+  CartesianGrid, BarChart, Bar, Cell, ReferenceLine
 } from 'recharts';
 import { 
-  Activity, ShieldCheck, Clock, RefreshCw, HeartPulse, FileText, 
-  ChevronRight, LayoutGrid, BarChart3, TrendingUp, AlertCircle, Thermometer 
+  Activity, ShieldCheck, Clock, RefreshCw, LayoutGrid, 
+  BarChart3, TrendingUp, AlertCircle, Thermometer, Zap 
 } from 'lucide-react';
 import axios from 'axios';
 import Footer from '../components/Footer';
 
-// ... (Keep the LoadingState component from your previous snippet)
-
+// Loading State Component
 const LoadingState = () => (
   <div className="min-h-screen bg-white flex items-center justify-center p-8">
     <div className="max-w-md w-full space-y-6 text-center">
-      {/* Animated Icon Container */}
       <div className="inline-flex items-center justify-center w-20 h-20 mx-auto bg-blue-50 rounded-2xl border-4 border-blue-100 border-t-blue-500 animate-spin">
         <ShieldCheck className="w-8 h-8 text-blue-600" />
       </div>
-      
       <div>
-        <h2 className="text-xl font-semibold text-slate-900 mb-2 tracking-tight">
-          Syncing Metabolic Data
-        </h2>
+        <h2 className="text-xl font-semibold text-slate-900 mb-2 tracking-tight">Syncing Metabolic Data</h2>
         <p className="text-sm text-slate-500 flex items-center justify-center gap-2">
           <Clock className="w-4 h-4 text-blue-500 animate-pulse" />
           Connecting to clinical database...
         </p>
       </div>
-
-      {/* Bounce Loading Dots */}
-      <div className="flex justify-center gap-2">
-        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-      </div>
     </div>
   </div>
 );
+
+// --- HARDCODED DATA FOR HBA1C TREND ---
+const hardcodedHbA1cData = [
+  { month: 'Jan', hba1c: 7.2 },
+  { month: 'Feb', hba1c: 7.0 },
+  { month: 'Mar', hba1c: 6.8 },
+  { month: 'Apr', hba1c: 6.5 },
+  { month: 'May', hba1c: 6.3 },
+  { month: 'Jun', hba1c: 6.1 },
+];
 
 const Analytic = () => {
   const [stats, setStats] = useState(null);
@@ -75,7 +73,7 @@ const Analytic = () => {
   if (loading) return <LoadingState />;
 
   return (
-   <div className="min-h-screen flex flex-col bg-slate-50/50">
+    <div className="min-h-screen flex flex-col bg-slate-50/50">
       
       {/* Header section */}
       <div className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-40">
@@ -96,10 +94,9 @@ const Analytic = () => {
         </div>
       </div>
 
-      {/* 2. Added 'flex-grow' to this wrapper to push footer down */}
       <main className="flex-grow max-w-7xl w-full mx-auto px-6 py-12 space-y-8">
         
-        {/* 1. KPI CARDS SECTION */}
+        {/* KPI CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <KPICard title="Estimated HbA1c" value={`${stats?.hba1c || 0}%`} icon={<ShieldCheck />} color="purple" />
           <KPICard title="Avg Glucose" value={`${stats?.avgSugar || 0} mg/dL`} icon={<Activity />} color="blue" />
@@ -107,7 +104,7 @@ const Analytic = () => {
           <KPICard title="Peak Level" value={`${stats?.maxSugar || 0}`} icon={<AlertCircle />} color="orange" />
         </div>
 
-        {/* 2. GLYCEMIC DISTRIBUTION & MONTHLY TREND */}
+        {/* GLYCEMIC DISTRIBUTION & HARDCODED TREND */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-8 pb-4 border-b">
@@ -121,34 +118,40 @@ const Analytic = () => {
             </div>
           </div>
 
+          {/* REPLACED WITH HARDCODED GRAPH */}
           <div className="lg:col-span-8 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <BarChart3 className="text-blue-600" size={20} />
-                <h3 className="font-bold text-slate-800">Monthly HbA1c Trend</h3>
+                <div>
+                  <h3 className="font-bold text-slate-800">Projected HbA1c Trend</h3>
+                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Clinical Benchmark</p>
+                </div>
               </div>
+              <Zap className="text-amber-400 fill-amber-400" size={18} />
             </div>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={monthlyStats}>
+                <AreaChart data={hardcodedHbA1cData}>
                   <defs>
-                    <linearGradient id="colorHb" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    <linearGradient id="colorHbHard" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis hide domain={['dataMin - 1', 'dataMax + 1']} />
-                  <Tooltip content={<CustomTooltip title="HbA1c Estimate" unit="%" />} />
-                  <Area type="monotone" dataKey="hba1c" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorHb)" />
+                  <YAxis hide domain={[5, 8]} />
+                  <Tooltip content={<CustomTooltip title="Projected HbA1c" unit="%" />} />
+                  <ReferenceLine y={6.0} stroke="#10b981" strokeDasharray="3 3" label={{ value: 'Target', position: 'insideBottomLeft', fill: '#10b981', fontSize: 10 }} />
+                  <Area type="monotone" dataKey="hba1c" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorHbHard)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* 3. WEEKLY BAR GRAPH COMPARISON */}
+        {/* WEEKLY BAR GRAPH (LIVE DATA) */}
         <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-8">
             <Activity className="text-indigo-600" size={20} />
@@ -169,10 +172,9 @@ const Analytic = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <p className="mt-4 text-[11px] text-slate-400 font-medium italic">* Red indicates weekly averages above clinical target (140 mg/dL)</p>
         </div>
    
-        {/* 4. CONTRIBUTIONS HEATMAP */}
+        {/* CONTRIBUTIONS HEATMAP */}
         <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <LayoutGrid className="text-emerald-600" size={20} />
@@ -188,14 +190,12 @@ const Analytic = () => {
                   if (!value) return 'color-empty';
                   return `color-scale-${Math.min(value.count, 4)}`;
                 }}
-                tooltipDataAttrs={value => ({ 'data-tip': `${value.date}: ${value.count} logs` })}
               />
             </div>
           </div>
         </div>
       </main>
 
-      {/* 3. Footer is now naturally at the bottom */}
       <Footer/> 
 
       <style>{`
@@ -247,7 +247,7 @@ const CustomTooltip = ({ active, payload, title, unit }) => {
     return (
       <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-xl">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{title}</p>
-        <p className="text-lg font-black text-blue-600">{payload[0].value}{unit}</p>
+        <p className="text-lg font-black text-indigo-600">{payload[0].value}{unit}</p>
       </div>
     );
   }

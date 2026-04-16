@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion'; // Highly recommended for "Smooth" feel
 import Footer from '../components/Footer';
 
