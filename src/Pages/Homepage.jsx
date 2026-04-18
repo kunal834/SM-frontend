@@ -76,8 +76,8 @@ const Homepage = () => {
             <Link to="/login" className="px-14 py-6 bg-slate-900 text-white rounded-full text-lg font-medium shadow-2xl hover:shadow-slate-400/40 hover:-translate-y-1 transition-all">
               Begin Your Journey
             </Link>
-            <Link to="/demo" className="group flex items-center gap-3 text-slate-600 font-semibold text-lg">
-              Explore the interface 
+            <Link to="/About" className="group flex items-center gap-3 text-slate-600 font-semibold text-lg">
+             About us 
               <span className="w-12 h-[1px] bg-slate-300 group-hover:w-16 transition-all"></span>
             </Link>
           </div>

@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import Homepage from './Pages/Homepage.jsx';
 import History from './Pages/History.jsx';
 import Analytic from './Pages/Analytic.jsx';
+import About from './Pages/About.jsx';
 
 function App() {
   const { Authuser }  = useContext(Authcontext);
@@ -30,6 +31,7 @@ function App() {
           <Route path="/Addlog" element={<Addlog />} />
           <Route path="/History" element={<History />} />
           <Route path="/Analytic" element={<Analytic />} />
+          <Route path="/About" element={<About />} />
           
           {/* 404 Page (Optional) */}
           <Route path="*" element={<div className="text-center mt-20">Page Not Found</div>} />
