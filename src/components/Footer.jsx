@@ -1,83 +1,94 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Sparkles, Heart, Shield } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const footerSections = [
     {
-      title: "Platform",
+      title: "Experience",
       links: [
-        { name: "Features", path: "/#features" },
-        { name: "Security", path: "/security" },
-        { name: "API", path: "/docs" },
-        { name: "Pricing", path: "/pricing" }
+        
       ]
     },
     {
-      title: "Legal",
+      title: "Integrity",
       links: [
-        { name: "Privacy", path: "/privacy" },
-        { name: "Terms", path: "/terms" },
-        { name: "HIPAA", path: "/compliance" },
-        { name: "Cookie Policy", path: "/cookies" }
+        
       ]
     }
   ];
 
   return (
-    <footer className="pt-24 pb-12 px-6 bg-[#0B0F1A]">
-      <div className="max-w-7xl mx-auto border-t border-white/5 pt-16 flex flex-col md:flex-row justify-between items-start gap-12">
-        
-        {/* Brand Section */}
-        <div className="space-y-4">
-          <Link to="/" className="text-2xl font-black text-white italic tracking-tighter">
-            SUG<span className="text-teal-500">MON</span>
-          </Link>
-          <p className="text-slate-500 max-w-xs text-sm leading-relaxed">
-            The gold standard in metabolic health tracking for the modern patient. 
-            Precision data meets intuitive design.
-          </p>
-          <div className="flex gap-4 pt-2">
-            {/* Social Placeholders */}
-            <div className="w-5 h-5 bg-slate-800 rounded-full hover:bg-teal-500/20 transition-colors cursor-pointer" />
-            <div className="w-5 h-5 bg-slate-800 rounded-full hover:bg-teal-500/20 transition-colors cursor-pointer" />
-            <div className="w-5 h-5 bg-slate-800 rounded-full hover:bg-teal-500/20 transition-colors cursor-pointer" />
+    <footer className="relative pt-32 pb-16 px-6 bg-[#F0F4F7] overflow-hidden">
+      {/* Decorative Blur */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-20 lg:gap-12">
+          
+          {/* --- BRAND STORY --- */}
+          <div className="space-y-8 max-w-sm">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className=" p-1.5 rounded-xl shadow-lg">
+               <img src="/log.png" className="w-10 h-10 relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500" alt="Logo" />
+              </div>
+              <span className="text-2xl font-serif italic tracking-tight text-slate-800">
+                flytics
+              </span>
+            </Link>
+            
+            <p className="text-slate-500 font-medium text-sm leading-relaxed italic">
+              "Redefining metabolic clarity through the lens of calm. 
+              Tracking your rhythm should feel like a breath of fresh air."
+            </p>
+
+            <div className="flex gap-6 items-center">
+              <Heart size={16} className="text-rose-300" />
+              <Shield size={16} className="text-slate-300" />
+              <div className="h-px w-12 bg-slate-200" />
+            </div>
+          </div>
+
+          {/* --- NAVIGATION GRID --- */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-12 sm:gap-24">
+            {footerSections.map((section) => (
+              <div key={section.title} className="space-y-6">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+                  {section.title}
+                </h4>
+                <nav className="flex flex-col gap-4">
+                  {section.links.map((link) => (
+                    <Link 
+                      key={link.name} 
+                      to={link.path} 
+                      className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-all hover:translate-x-1 inline-block"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Link Sections */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-16">
-          {footerSections.map((section) => (
-            <div key={section.title} className="space-y-4">
-              <h4 className="text-white font-bold text-xs uppercase tracking-widest">
-                {section.title}
-              </h4>
-              <nav className="flex flex-col gap-2 text-sm text-slate-500">
-                {section.links.map((link) => (
-                  <Link 
-                    key={link.name} 
-                    to={link.path} 
-                    className="hover:text-teal-400 transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-          ))}
-        </div>
-      </div>
+        {/* --- BOTTOM SECTION --- */}
+        <div className="mt-32 pt-12 border-t border-slate-200/60 text-center lg:text-left flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">
+              &copy; {currentYear} flytics. built for longevity.
+            </p>
+          </div>
 
-      {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto mt-24 text-center">
-        <div className="text-[10px] text-slate-700 font-mono uppercase tracking-[0.5em] mb-4">
-          &copy; {currentYear} SUGMON. Built for longevity.
+          <div className="max-w-lg">
+            <p className="text-[10px] text-slate-400 leading-relaxed italic text-center lg:text-right">
+              Disclaimer: flytics is a personal data tracking companion and does not constitute medical advice. 
+              Always seek the guidance of your physician for clinical decisions.
+            </p>
+          </div>
         </div>
-        <p className="text-[9px] text-slate-800 max-w-md mx-auto leading-relaxed">
-          DISCLAIMER: Sugmon is a data tracking tool and not a medical device. 
-          Always consult with a healthcare professional before making clinical decisions.
-        </p>
       </div>
     </footer>
   );

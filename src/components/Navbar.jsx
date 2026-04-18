@@ -1,24 +1,19 @@
-import React, { useState, useContext } from 'react'; // Added useContext here
+import React, { useState, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Authcontext } from '../../context/authcontext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
-  // 1. Pull Authuser and your logout function from Context
-  // Assuming your context provides { Authuser, logout }
   const { Authuser, logout } = useContext(Authcontext);
-  console.log("Navbar Auth user" , Authuser)
-
-  // 2. Determine logged-in status based on Authuser existence
-  const isLoggedIn = !!Authuser; 
+  
+  const isLoggedIn = !!Authuser;
 
   const handleLogout = async () => {
     try {
-      // Call the real logout from context (which should handle the API call)
-      await logout(); 
+      await logout();
       setIsOpen(false);
       navigate('/login');
     } catch (error) {
@@ -35,132 +30,146 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          
-          {/* Brand Logo */}
-          <Link to={isLoggedIn ? "/" : "/"} className="flex-shrink-0 flex items-center group">
-           
-           <img src="/log.png" className="w-16 h-16"  alt="Logo" />
-           
-            <span className="text-xl font-bold tracking-tight text-slate-900 mb-2">
-              Flytics<span className="text-teal-600"></span>
-            </span>
-          </Link>
+    // Fixed position with padding to create the "floating" effect
+    <nav className="fixed top-4 inset-x-0 z-50 px-6 pointer-events-none">
+      <div className="max-w-7xl mx-auto flex justify-center">
+        <div className="w-full bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] rounded-[2.5rem] px-6 py-2 pointer-events-auto transition-all duration-500">
+          <div className="flex justify-between items-center h-14">
+            
+            {/* --- BRAND LOGO --- */}
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="relative">
+                <div className="absolute inset-0 bg-rose-200 rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity" />
+                <img src="/log.png" className="w-10 h-10 relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500" alt="Logo" />
+              </div>
+              <span className="text-xl font-serif italic tracking-tight text-slate-800">
+                flytics
+              </span>
+            </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 items-center">
-            {isLoggedIn ? (
-              <>
-                {/* 3. Personalized Greeting (Optional but nice) */}
-                <span className="text-xs text-slate-400 font-medium">
-                  Hi, {Authuser.name || 'User'}
-                </span>
+            {/* --- DESKTOP MENU --- */}
+            <div className="hidden md:flex space-x-1 items-center">
+              {isLoggedIn ? (
+                <>
+                  <div className="flex items-center space-x-1 mr-4 border-r border-slate-200 pr-4">
+                    {authLinks.map((link) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        className={`px-4 py-2 rounded-full text-[13px] font-medium transition-all duration-300 ${
+                          isActive(link.path) 
+                            ? 'bg-slate-900 text-white shadow-lg' 
+                            : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
 
-                {authLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`text-sm font-semibold transition-colors ${
-                      isActive(link.path) ? 'text-teal-600' : 'text-slate-600 hover:text-teal-500'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-                
+                  <div className="flex items-center gap-6">
+                    <Link 
+                      to="/Addlog" 
+                      className="group relative px-5 py-2.5 bg-rose-50 text-rose-600 rounded-full text-[13px] font-bold transition-all hover:bg-rose-100 active:scale-95"
+                    >
+                      <span className="relative z-10">+ New Log</span>
+                    </Link>
+
+                    <button 
+                      onClick={handleLogout}
+                      className="text-[13px] font-bold text-slate-400 hover:text-rose-400 transition-colors"
+                    >
+                      Logout
+                    </button>
+                    
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-slate-200 to-slate-100 border border-white flex items-center justify-center text-[10px] font-bold text-slate-500 shadow-inner">
+                      {Authuser.name?.[0] || 'U'}
+                    </div>
+                  </div>
+                </>
+              ) : (
                 <Link 
-                  to="/Addlog" 
-                  className="bg-slate-900 hover:bg-teal-700 text-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm active:scale-95"
+                  to="/login" 
+                  className="px-6 py-2.5 bg-slate-900 text-white rounded-full text-[13px] font-bold hover:shadow-xl transition-all active:scale-95"
                 >
-                  + Add Log
+                  Sign In
                 </Link>
+              )}
+            </div>
 
-                <button 
-                  onClick={handleLogout}
-                  className="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link 
-                to="/login" 
-                className="text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors"
+            {/* --- MOBILE BUTTON --- */}
+            <div className="md:hidden flex items-center">
+              <button 
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-600 hover:bg-slate-100 transition-colors"
               >
-                Login
-              </Link>
-            )}
-          </div>
-
-          {/* Mobile Menu Button ... (Keep your existing SVG logic) */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-md text-slate-600 hover:bg-slate-100 transition-colors"
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                {isOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                )}
-              </svg>
-            </button>
+                <div className="w-5 flex flex-col items-end gap-1">
+                  <span className={`h-0.5 bg-current transition-all ${isOpen ? 'w-5 rotate-45 translate-y-1.5' : 'w-5'}`} />
+                  <span className={`h-0.5 bg-current transition-all ${isOpen ? 'opacity-0' : 'w-3'}`} />
+                  <span className={`h-0.5 bg-current transition-all ${isOpen ? 'w-5 -rotate-45 -translate-y-1.5' : 'w-4'}`} />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 shadow-xl">
-          <div className="px-4 pt-2 pb-6 space-y-1">
-            {isLoggedIn ? (
-              <>
-                <div className="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Logged in as {Authuser.name}
+      {/* --- MOBILE MENU OVERLAY --- */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-20 inset-x-6 md:hidden pointer-events-auto"
+          >
+            <div className="bg-white/90 backdrop-blur-2xl rounded-[2rem] p-6 border border-white shadow-2xl">
+              {isLoggedIn ? (
+                <div className="space-y-2">
+                  <p className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                    Welcome, {Authuser.name}
+                  </p>
+                  {authLinks.map((link) => (
+                    <Link
+                      key={link.path}
+                      to={link.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-6 py-4 rounded-2xl text-lg font-serif italic ${
+                        isActive(link.path) ? 'bg-slate-900 text-white' : 'text-slate-600'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                  <div className="pt-6 grid grid-cols-2 gap-3">
+                    <Link 
+                      to="/AddLog"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-center py-4 bg-rose-400 text-white rounded-2xl font-bold"
+                    >
+                      + Log
+                    </Link>
+                    <button 
+                      onClick={handleLogout}
+                      className="py-4 border border-slate-200 text-slate-500 rounded-2xl font-bold"
+                    >
+                      Logout
+                    </button>
+                  </div>
                 </div>
-                {authLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-3 py-4 text-base font-medium border-b border-slate-50 ${
-                      isActive(link.path) ? 'text-teal-600' : 'text-slate-700'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-                <div className="pt-4 space-y-2">
-                  <Link 
-                    to="/AddLog"
-                    onClick={() => setIsOpen(false)}
-                    className="block w-full bg-teal-600 text-white text-center py-3 rounded-xl font-bold"
-                  >
-                    + New Reading
-                  </Link>
-                  <button 
-                    onClick={handleLogout}
-                    className="block w-full text-center py-3 text-red-500 font-bold border border-red-100 rounded-xl"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </>
-            ) : (
-              <Link 
-                to="/login"
-                onClick={() => setIsOpen(false)}
-                className="block w-full bg-teal-600 text-white text-center py-3 rounded-xl font-bold"
-              >
-                Login
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
+              ) : (
+                <Link 
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-bold"
+                >
+                  Sign In
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

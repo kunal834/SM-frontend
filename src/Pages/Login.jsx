@@ -1,14 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { Authcontext } from '../../context/authcontext';
-import { Mail, ArrowRight, ShieldCheck, Activity, ChevronLeft } from 'lucide-react'; // Using Lucide for pro icons
+import { Mail, ArrowRight, ShieldCheck, Sparkles, ChevronLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Login = () => {
-  const { login, Authuser } = useContext(Authcontext);
-  const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    age: ''
-  });
+  const { login } = useContext(Authcontext);
+  const [formData, setFormData] = useState({ email: '', name: '', age: '' });
   const [isSent, setIsSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,150 +14,176 @@ const Login = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  try {
-    const result = await login(formData);
-    if (result?.success) { // Use ?. to safely check properties
-      setIsSent(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const result = await login(formData);
+      if (result?.success) setIsSent(true);
+    } catch (err) {
+      alert(err.message || "Something went wrong.");
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err) {
-    alert(err.message || "Something went wrong.");
-  } finally {
-    // THIS IS THE FIX: This runs no matter what (success OR failure)
-    setIsLoading(false); 
-  }
-};
+  };
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* LEFT SIDE: AUTH FORM */}
-      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-24 xl:px-32">
-        <div className="max-w-md w-full mx-auto">
-          {/* Header */}
-          <div className="mb-10">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="bg-teal-600 p-2 rounded-lg">
-                <Activity className="text-white w-6 h-6" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-slate-900">SugarTrack</span>
-            </div>
+    <div className="min-h-screen bg-[#F0F4F7] flex items-center justify-center p-6 relative overflow-hidden font-sans selection:bg-rose-100">
+      
+      {/* --- BACKGROUND AMBIENCE --- */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full bg-rose-100/40 blur-[120px]" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[50%] rounded-full bg-blue-100/30 blur-[100px]" />
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-5xl w-full grid lg:grid-cols-2 bg-white/40 backdrop-blur-3xl rounded-[3rem] border border-white/60 shadow-2xl overflow-hidden relative z-10"
+      >
+        {/* --- LEFT SIDE: FORM --- */}
+        <div className="p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
+          <div className="max-w-sm mx-auto w-full">
             
+            <header className="mb-10 text-center lg:text-left">
+              <div className="flex items-center justify-center lg:justify-start gap-2 mb-6">
+                <div className="bg-slate-900 p-2 rounded-2xl shadow-lg">
+                  <Sparkles className="text-rose-300 w-5 h-5" />
+                </div>
+                <span className="text-xl font-serif italic tracking-tight text-slate-800">flytics</span>
+              </div>
+
+              <AnimatePresence mode="wait">
+                {!isSent ? (
+                  <motion.div
+                    key="welcome"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                  >
+                    <h1 className="text-4xl font-serif text-slate-900 italic mb-3">Welcome back</h1>
+                    <p className="text-slate-500/80 font-medium">A magic link will bring you home.</p>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key="back"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    onClick={() => setIsSent(false)}
+                    className="group flex items-center text-xs font-black uppercase tracking-widest text-rose-400 hover:text-rose-500 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+                    Refine Details
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </header>
+
             {!isSent ? (
-              <>
-                <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Welcome back</h1>
-                <p className="text-slate-500">Enter your details to receive a secure magic link.</p>
-              </>
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-2">Name</label>
+                      <input 
+                        type="text" 
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full px-6 py-4 rounded-[2rem] bg-white/50 border border-white focus:bg-white focus:ring-4 focus:ring-rose-100 outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-2">Age</label>
+                      <input 
+                        type="number" 
+                        name="age"
+                        value={formData.age}
+                        onChange={handleChange}
+                        className="w-full px-6 py-4 rounded-[2rem] bg-white/50 border border-white focus:bg-white focus:ring-4 focus:ring-rose-100 outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                        placeholder="25"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-2">Email</label>
+                    <input 
+                      type="email" 
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-6 py-4 rounded-[2rem] bg-white/50 border border-white focus:bg-white focus:ring-4 focus:ring-rose-100 outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                      placeholder="nature@peace.com"
+                    />
+                  </div>
+                </div>
+
+                <button 
+                  disabled={isLoading}
+                  className="w-full relative group overflow-hidden bg-slate-900 text-white font-bold py-5 rounded-[2rem] shadow-2xl hover:shadow-slate-300 transition-all active:scale-95 disabled:opacity-50"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-rose-400 to-rose-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {isLoading ? "Preparing magic..." : "Send Magic Link"}
+                    {!isLoading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+                  </span>
+                </button>
+
+                <div className="flex items-center gap-2 justify-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>Encrypted Space</span>
+                </div>
+              </form>
             ) : (
-              <button 
-                onClick={() => setIsSent(false)}
-                className="group flex items-center text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors"
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-rose-50/50 border border-rose-100 p-10 rounded-[3rem] text-center"
               >
-                <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
-                Back to edit details
-              </button>
+                <div className="w-20 h-20 bg-white rounded-[2rem] shadow-xl shadow-rose-100 flex items-center justify-center mx-auto mb-8">
+                  <Mail className="w-10 h-10 text-rose-400" />
+                </div>
+                <h3 className="text-2xl font-serif italic text-slate-900 mb-4">Inbox is waiting</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  We sent a quiet invitation to <br/>
+                  <span className="font-bold text-slate-800">{formData.email}</span>
+                </p>
+                <div className="mt-10 pt-6 border-t border-rose-100/50">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-rose-400/60">Expires in 15m</p>
+                </div>
+              </motion.div>
             )}
           </div>
+        </div>
 
-          {!isSent ? (
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2 sm:col-span-1">
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Full Name</label>
-                  <input 
-                    type="text" 
-                    name="name"
-                    // required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all placeholder:text-slate-400"
-                    placeholder="John Doe"
-                  />
-                </div>
-                <div className="col-span-2 sm:col-span-1">
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Age</label>
-                  <input 
-                    type="number" 
-                    name="age"
-                    // required
-                    value={formData.age}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all"
-                    placeholder="25"
-                  />
-                </div>
+        {/* --- RIGHT SIDE: SOCIAL PROOF --- */}
+        <div className="hidden lg:flex bg-slate-900 p-16 flex-col justify-center relative">
+          <div className="absolute inset-0 overflow-hidden">
+             <div className="absolute top-1/4 right-0 w-64 h-64 bg-rose-500/20 rounded-full blur-[100px]" />
+             <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px]" />
+          </div>
+          
+          <div className="relative z-10">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-rose-300/60 mb-8 block">Member Note</span>
+            <blockquote className="text-3xl font-serif italic text-white leading-relaxed mb-10">
+              "Finally, a medical app that doesn't feel like a medical app. The calmest part of my morning routine."
+            </blockquote>
+            
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
+                <img src="https://i.pravatar.cc/150?u=sarah" alt="User" className="w-full h-full object-cover" />
               </div>
-
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email Address</label>
-                <input 
-                  type="email" 
-                  name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all"
-                  placeholder="Enter your Gmail"
-                />
-              </div>
-
-              <button 
-                disabled={isLoading}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-slate-200 transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
-              >
-                {isLoading ? "Generating link..." : "Send Magic Link"}
-                {!isLoading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
-              </button>
-
-              <div className="flex items-center gap-2 justify-center text-xs text-slate-400 mt-6">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Enterprise-grade encryption enabled</span>
-              </div>
-            </form>
-          ) : (
-            <div className="bg-teal-50 border border-teal-100 p-8 rounded-3xl text-center">
-              <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6">
-                <Mail className="w-8 h-8 text-teal-600" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900">Check your inbox</h3>
-              <p className="text-slate-600 mt-3 leading-relaxed">
-                We've sent a secure login link to <br/>
-                <span className="font-semibold text-teal-700">{formData.email}</span>
-              </p>
-              <div className="mt-8 pt-6 border-t border-teal-200/50">
-                <p className="text-xs text-teal-600/70">Link expires in 15 minutes</p>
+                <p className="font-bold text-white text-lg">Sarah Jenkins</p>
+                <p className="text-sm text-slate-400 italic">Lifestyle Advocate</p>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      </div>
-
-      {/* RIGHT SIDE: BRANDING/SOCIAL PROOF */}
-      <div className="hidden lg:flex flex-1 bg-slate-50 p-12 items-center justify-center">
-        <div className="max-w-lg w-full">
-            <div className="relative">
-                {/* Decorative Elements */}
-                <div className="absolute -top-20 -left-20 w-64 h-64 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-                
-                <div className="relative bg-white/60 backdrop-blur-xl border border-white p-10 rounded-[2.5rem] shadow-2xl shadow-slate-200">
-                    <blockquote className="text-2xl font-medium text-slate-800 leading-relaxed">
-                        "SugarTrack has completely transformed how I monitor my glucose levels. The passwordless login is a game changer for quick entries."
-                    </blockquote>
-                    <div className="mt-8 flex items-center gap-4">
-                        <div className="w-12 h-12 bg-slate-200 rounded-full overflow-hidden">
-                            <img src="https://i.pravatar.cc/150?u=sarah" alt="User" />
-                        </div>
-                        <div>
-                            <p className="font-bold text-slate-900">Sarah Jenkins</p>
-                            <p className="text-sm text-slate-500">Diabetes Care Specialist</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

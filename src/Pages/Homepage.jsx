@@ -1,123 +1,138 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import { motion } from 'framer-motion'; // Highly recommended for "Smooth" feel
+import { motion } from 'framer-motion';
 import Footer from '../components/Footer';
 
-// Animation variants
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration:  0.6, ease: "easeOut" }
+const softHover = {
+  hover: { y: -5, transition: { duration: 0.4, ease: "easeOut" } }
 };
 
-const MetricCard = ({ label, val, unit, desc, colorClass }) => (
+const MetricCard = ({ label, val, unit, desc, colorFilter, delay }) => (
   <motion.div 
-    {...fadeInUp}
-    className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow"
-  >
-    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">{label}</p>
-    <div className="flex items-baseline gap-1">
-      <span className={`text-5xl font-light tracking-tighter ${colorClass}`}>{val}</span>
-      <span className="text-slate-400 font-medium text-sm">{unit}</span>
-    </div>
-    <p className="mt-4 text-xs text-slate-500 leading-relaxed">{desc}</p>
-  </motion.div>
-);
-
-const BentoCard = ({ children, className = "", delay = 0 }) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 0.5, delay }}
-    className={`rounded-[2.5rem] p-10 transition-all duration-500 ${className}`}
+    transition={{ duration: 1, delay }}
+    whileHover="hover"
+    variants={softHover}
+    className="relative p-10 rounded-[4rem] bg-white/30 backdrop-blur-2xl border border-white/40 shadow-xl shadow-slate-200/50 overflow-hidden group"
   >
-    {children}
+    {/* Subtle Glow behind the number */}
+    <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[60px] opacity-20 ${colorFilter}`} />
+    
+    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8 block">{label}</span>
+    
+    <div className="flex items-baseline gap-2 mb-4">
+      <span className="text-7xl font-serif text-slate-800 tracking-tighter italic">{val}</span>
+      <span className="text-slate-400 font-light text-xl italic">{unit}</span>
+    </div>
+    
+    <p className="text-sm text-slate-500/70 leading-relaxed font-medium">{desc}</p>
   </motion.div>
 );
 
 const Homepage = () => {
   const metrics = [
-    { label: 'Current Glucose', val: '108', unit: 'mg/dL', desc: 'Real-time blood sugar level.', colorClass: 'text-teal-600' },
-    { label: 'Estimated HbA1c', val: '5.4', unit: '%', desc: '3-month metabolic health projection.', colorClass: 'text-blue-600' },
-    { label: 'Time in Range', val: '94', unit: '%', desc: 'Percentage spent in target zone.', colorClass: 'text-emerald-600' }
+    { label: 'Current Level', val: '108', unit: 'mg/dL', desc: 'Flowing within your ideal rhythm.', colorFilter: 'bg-emerald-400' },
+    { label: 'Projected A1c', val: '5.4', unit: '%', desc: 'A steady horizon for the months ahead.', colorFilter: 'bg-blue-400' },
+    { label: 'Harmony Score', val: '94', unit: '%', desc: 'Time spent in your personal sweet spot.', colorFilter: 'bg-rose-400' }
   ];
 
   return (
-    // 'selection:bg-teal-50' handles the text highlight color
-    <div className="bg-[#FBFDFE] text-slate-600 font-sans selection:bg-teal-50">
+    <div className="min-h-screen bg-[#F0F4F7] text-slate-700 font-sans selection:bg-rose-100 overflow-x-hidden">
       
-      {/* --- 1. HERO SECTION --- */}
-      <section className="relative pt-24 pb-20 lg:pt-36 lg:pb-40 bg-white">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-7xl mx-auto px-6 relative z-10 text-center"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 mb-8">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Specialized Diabetes Management</span>
-          </div>
+      {/* Background Ambience */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] rounded-full bg-blue-100/40 blur-[150px] animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-rose-50/50 blur-[120px]" />
+        <div className="absolute top-[30%] left-[20%] w-4 h-4 bg-emerald-200 rounded-full blur-xl" />
+      </div>
 
-          <h1 className="text-6xl lg:text-[90px] font-semibold text-slate-900 tracking-tight leading-[1] mb-8">
-            Your Glucose. <br />
-            <span className="italic font-light text-teal-600">Perfectly Trended.</span>
+      {/* --- HERO SECTION --- */}
+      <section className="relative pt-32 pb-16 px-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/40 border border-white/60 text-slate-500 text-[11px] font-bold uppercase tracking-widest mb-12 shadow-sm"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            Breathable Health Tracking
+          </motion.div>
+
+          <h1 className="text-6xl md:text-[110px] font-serif tracking-tight text-slate-900 leading-[0.85] mb-12">
+            Health in <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-rose-400 to-slate-800 italic font-light leading-normal">Soft Focus.</span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-lg text-slate-500 font-normal leading-relaxed mb-12">
-            The simplest way to monitor daily Sugar levels and HbA1c trends. 
-            No bloat—just the data you and your doctor actually need.
+          <p className="max-w-2xl mx-auto text-xl text-slate-500/80 font-light leading-relaxed mb-16">
+            Escape the clinical noise. A sugar-tracking experience that feels more like a morning breeze than a medical chore.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/login" className="px-10 py-4 bg-teal-600 text-white font-bold rounded-2xl transition-all hover:bg-teal-700 hover:shadow-lg active:scale-95">
-              Start Logging Today
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+            <Link to="/login" className="px-14 py-6 bg-slate-900 text-white rounded-full text-lg font-medium shadow-2xl hover:shadow-slate-400/40 hover:-translate-y-1 transition-all">
+              Begin Your Journey
             </Link>
-            <Link to="/demo" className="px-10 py-4 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all">
-              See Live Demo
+            <Link to="/demo" className="group flex items-center gap-3 text-slate-600 font-semibold text-lg">
+              Explore the interface 
+              <span className="w-12 h-[1px] bg-slate-300 group-hover:w-16 transition-all"></span>
             </Link>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* --- 2. THE SPECIFIC DATA VIEW --- */}
-      <section className="relative -mt-16 pb-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="bg-white/70 backdrop-blur-xl rounded-[3rem] border border-white p-3 shadow-2xl shadow-slate-200/50">
-            <div className="bg-slate-50/50 rounded-[2.5rem] border border-slate-100 overflow-hidden">
-              <div className="p-8 lg:p-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {metrics.map((m, i) => <MetricCard key={i} {...m} />)}
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* --- 3. CORE VALUE PROPS --- */}
-      <section className="py-24 bg-[#F8FAFC]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <BentoCard className="bg-white border border-slate-200 shadow-sm hover:border-teal-200">
-              <div className="w-12 h-12 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 mb-6">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-3">HbA1c Forecasting</h3>
-              <p className="text-slate-500 leading-relaxed">
-                We calculate your estimated HbA1c in real-time based on your daily sugar logs.
-              </p>
-            </BentoCard>
+      {/* --- METRICS GRID --- */}
+      <section className="py-24 px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {metrics.map((m, i) => (
+            <MetricCard key={i} {...m} delay={i * 0.2} />
+          ))}
+        </div>
+      </section>
 
-            <BentoCard className="bg-slate-900 text-white shadow-2xl" delay={0.2}>
-              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-teal-400 mb-6">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-              </div>
-              <h3 className="text-2xl font-bold mb-3">Doctor-Ready Reports</h3>
-              <p className="text-slate-400 leading-relaxed">
-                One-tap PDF exports of your sugar history, formatted perfectly for clinical review.
+      {/* --- FEATURE EXPERIENCE --- */}
+      <section className="py-32 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              className="p-16 rounded-[4rem] bg-gradient-to-br from-slate-800 to-slate-950 text-white shadow-3xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-80 h-80 bg-rose-500/10 rounded-full blur-[100px]" />
+              <h3 className="text-4xl font-serif italic mb-8">Quiet Intelligence</h3>
+              <p className="text-slate-400 text-lg leading-relaxed mb-10">
+                Our AI doesn't shout. It whispers trends, predicting your HbA1c with gentle accuracy, allowing you to adjust without the stress.
               </p>
-            </BentoCard>
+              <div className="flex gap-4">
+                <div className="px-5 py-2 rounded-full border border-slate-700 text-xs font-bold tracking-widest uppercase">Predictive</div>
+                <div className="px-5 py-2 rounded-full border border-slate-700 text-xs font-bold tracking-widest uppercase">Non-Intrusive</div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              className="p-16 rounded-[4rem] bg-white border border-slate-100 shadow-sm flex flex-col justify-center"
+            >
+              <div className="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center text-rose-400 mb-10">
+                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-3xl font-serif text-slate-800 mb-6">Paper-Like Reports</h3>
+              <p className="text-slate-500 leading-relaxed mb-8">
+                Export your logs into beautifully minimal PDF summaries. Designed to be read at a glance, respecting your doctor's time and your eyes.
+              </p>
+              <button className="text-rose-400 font-black text-sm uppercase tracking-widest hover:tracking-[0.3em] transition-all">
+                Download Preview
+              </button>
+            </motion.div>
+
           </div>
         </div>
       </section>

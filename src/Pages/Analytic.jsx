@@ -7,37 +7,33 @@ import {
 } from 'recharts';
 import { 
   Activity, ShieldCheck, Clock, RefreshCw, LayoutGrid, 
-  BarChart3, TrendingUp, AlertCircle, Thermometer, Zap 
+  BarChart3, TrendingUp, AlertCircle, Thermometer, Sparkles
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 import Footer from '../components/Footer';
 
-// Loading State Component
+// --- RELAXING LOADING STATE ---
 const LoadingState = () => (
-  <div className="min-h-screen bg-white flex items-center justify-center p-8">
-    <div className="max-w-md w-full space-y-6 text-center">
-      <div className="inline-flex items-center justify-center w-20 h-20 mx-auto bg-blue-50 rounded-2xl border-4 border-blue-100 border-t-blue-500 animate-spin">
-        <ShieldCheck className="w-8 h-8 text-blue-600" />
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold text-slate-900 mb-2 tracking-tight">Syncing Metabolic Data</h2>
-        <p className="text-sm text-slate-500 flex items-center justify-center gap-2">
-          <Clock className="w-4 h-4 text-blue-500 animate-pulse" />
-          Connecting to clinical database...
-        </p>
-      </div>
+  <div className="min-h-screen bg-[#F0F4F7] flex items-center justify-center p-8">
+    <div className="text-center">
+      <motion.div 
+        animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        className="w-24 h-24 bg-white/50 backdrop-blur-xl rounded-[2.5rem] border border-white flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-blue-100"
+      >
+        <Sparkles className="w-10 h-10 text-slate-400" />
+      </motion.div>
+      <h2 className="text-2xl font-serif italic text-slate-800 mb-2">Finding your rhythm</h2>
+      <p className="text-sm text-slate-400 font-medium tracking-widest uppercase">Syncing clinical data</p>
     </div>
   </div>
 );
 
-// --- HARDCODED DATA FOR HBA1C TREND ---
 const hardcodedHbA1cData = [
-  { month: 'Jan', hba1c: 7.2 },
-  { month: 'Feb', hba1c: 7.0 },
-  { month: 'Mar', hba1c: 6.8 },
-  { month: 'Apr', hba1c: 6.5 },
-  { month: 'May', hba1c: 6.3 },
-  { month: 'Jun', hba1c: 6.1 },
+  { month: 'Jan', hba1c: 7.2 }, { month: 'Feb', hba1c: 7.0 },
+  { month: 'Mar', hba1c: 6.8 }, { month: 'Apr', hba1c: 6.5 },
+  { month: 'May', hba1c: 6.3 }, { month: 'Jun', hba1c: 6.1 },
 ];
 
 const Analytic = () => {
@@ -55,11 +51,9 @@ const Analytic = () => {
         axios.get(`/api/sugar/Monthly`),
         axios.get(`/api/sugar/contri`)
       ]);
-
       if (analysisRes.data.success) setStats(analysisRes.data.Analysis[0]);
       if (monthlyRes.data.success) setMonthlyStats(monthlyRes.data.Analysis);
       if (contribRes.data.success) setContributions(contribRes.data.Analysis);
-      
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
@@ -73,181 +67,187 @@ const Analytic = () => {
   if (loading) return <LoadingState />;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/50">
+    <div className="min-h-screen bg-[#F0F4F7] text-slate-700 font-sans selection:bg-rose-100 overflow-x-hidden pt-24">
       
-      {/* Header section */}
-      <div className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-500/10 border border-blue-100 rounded-xl">
-              <ShieldCheck className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900 leading-tight">Patient Analytics</h1>
-              <p className="text-slate-600 mt-1 text-sm font-medium">Metabolic health & clinical insights</p>
-            </div>
-          </div>
-          <button onClick={statsData} disabled={refreshing} className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-sm">
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing...' : 'Refresh Clinical Data'}
-          </button>
-        </div>
+      {/* Background Ambience */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-100/30 blur-[120px]" />
+        <div className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] rounded-full bg-rose-50/50 blur-[100px]" />
       </div>
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-6 py-12 space-y-8">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 pb-20 space-y-10">
         
-        {/* KPI CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <KPICard title="Estimated HbA1c" value={`${stats?.hba1c || 0}%`} icon={<ShieldCheck />} color="purple" />
-          <KPICard title="Avg Glucose" value={`${stats?.avgSugar || 0} mg/dL`} icon={<Activity />} color="blue" />
-          <KPICard title="Time in Range" value={`${stats?.timeInRangePercent || 0}%`} icon={<TrendingUp />} color="green" />
-          <KPICard title="Peak Level" value={`${stats?.maxSugar || 0}`} icon={<AlertCircle />} color="orange" />
+        {/* --- HEADER SECTION --- */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/50 border border-white text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live Clinical Feed
+            </motion.div>
+            <h1 className="text-5xl font-serif italic text-slate-900 tracking-tight">Body Harmony</h1>
+          </div>
+          
+          <button 
+            onClick={statsData} 
+            className="group flex items-center gap-3 px-8 py-4 bg-white/60 backdrop-blur-lg border border-white rounded-[2rem] text-sm font-bold shadow-xl hover:bg-white transition-all active:scale-95"
+          >
+            <RefreshCw className={`w-4 h-4 text-slate-400 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh Metabolism
+          </button>
         </div>
 
-        {/* GLYCEMIC DISTRIBUTION & HARDCODED TREND */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-            <div className="flex items-center gap-3 mb-8 pb-4 border-b">
-              <Thermometer className="text-blue-600" size={20} />
-              <h3 className="font-bold text-slate-800">Reading Ranges</h3>
-            </div>
-            <div className="space-y-8">
-              <RangeProgress label="High (>180)" count={stats?.highCount} total={stats?.totalReadings} color="bg-rose-500" />
-              <RangeProgress label="Normal (70-180)" count={stats?.normalCount} total={stats?.totalReadings} color="bg-emerald-500" />
-              <RangeProgress label="Low (<70)" count={stats?.lowCount} total={stats?.totalReadings} color="bg-amber-500" />
+        {/* --- KPI SECTION --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <KPICard title="HbA1c Projection" value={`${stats?.hba1c || 0}%`} unit="Est." icon={<ShieldCheck />} color="rose" />
+          <KPICard title="Daily Average" value={stats?.avgSugar || 0} unit="mg/dL" icon={<Activity />} color="blue" />
+          <KPICard title="Stability" value={`${stats?.timeInRangePercent || 0}%`} unit="Range" icon={<TrendingUp />} color="sage" />
+          <KPICard title="Highest Peak" value={stats?.maxSugar || 0} unit="Max" icon={<AlertCircle />} color="charcoal" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* --- READING RANGES --- */}
+          <div className="lg:col-span-4 bg-white/40 backdrop-blur-2xl border border-white/60 rounded-[3rem] p-10 shadow-xl">
+            <h3 className="text-xl font-serif italic mb-10 text-slate-800">Range Distribution</h3>
+            <div className="space-y-10">
+              <RangeProgress label="Elevated" count={stats?.highCount} total={stats?.totalReadings} color="bg-rose-300" />
+              <RangeProgress label="Optimal" count={stats?.normalCount} total={stats?.totalReadings} color="bg-emerald-300" />
+              <RangeProgress label="Critical" count={stats?.lowCount} total={stats?.totalReadings} color="bg-amber-300" />
             </div>
           </div>
 
-          {/* REPLACED WITH HARDCODED GRAPH */}
-          <div className="lg:col-span-8 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3">
-                <BarChart3 className="text-blue-600" size={20} />
-                <div>
-                  <h3 className="font-bold text-slate-800">Projected HbA1c Trend</h3>
-                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Clinical Benchmark</p>
-                </div>
+          {/* --- HBA1C TREND AREA CHART --- */}
+          <div className="lg:col-span-8 bg-white/40 backdrop-blur-2xl border border-white/60 rounded-[3rem] p-10 shadow-xl">
+            <div className="flex items-center justify-between mb-10">
+              <div>
+                <h3 className="text-xl font-serif italic text-slate-800">HbA1c Trend</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">6 Month Forecast</p>
               </div>
-              <Zap className="text-amber-400 fill-amber-400" size={18} />
+              <BarChart3 className="text-slate-300" size={24} />
             </div>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={hardcodedHbA1cData}>
                   <defs>
-                    <linearGradient id="colorHbHard" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    <linearGradient id="colorHb" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#FDA4AF" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#FDA4AF" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} dy={15} />
                   <YAxis hide domain={[5, 8]} />
-                  <Tooltip content={<CustomTooltip title="Projected HbA1c" unit="%" />} />
-                  <ReferenceLine y={6.0} stroke="#10b981" strokeDasharray="3 3" label={{ value: 'Target', position: 'insideBottomLeft', fill: '#10b981', fontSize: 10 }} />
-                  <Area type="monotone" dataKey="hba1c" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorHbHard)" />
+                  <Tooltip content={<CustomTooltip title="A1c Level" unit="%" />} />
+                  <Area type="monotone" dataKey="hba1c" stroke="#E11D48" strokeWidth={4} fill="url(#colorHb)" />
+                  <ReferenceLine y={6.0} stroke="#10b981" strokeDasharray="3 3" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* WEEKLY BAR GRAPH (LIVE DATA) */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-8">
-            <Activity className="text-indigo-600" size={20} />
-            <h3 className="font-bold text-slate-800">Weekly Glucose Averages</h3>
+        {/* --- WEEKLY GLUCOSE BAR CHART --- */}
+        <div className="bg-slate-900 rounded-[3rem] p-12 text-white shadow-3xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-[100px]" />
+          <div className="flex items-center gap-3 mb-10">
+            <h3 className="text-2xl font-serif italic">Weekly Rhythm</h3>
           </div>
-          <div className="h-[300px] w-full">
+          <div className="h-[320px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyStats}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip content={<CustomTooltip title="Avg Glucose" unit=" mg/dL" />} cursor={{fill: '#f8fafc'}} />
-                <Bar dataKey="avgGlucose" radius={[6, 6, 0, 0]} barSize={40}>
+                <XAxis dataKey="month" stroke="#475569" fontSize={11} tickLine={false} axisLine={false} dy={10} />
+                <Tooltip content={<CustomTooltip dark title="Average" unit=" mg/dL" />} cursor={{fill: 'rgba(255,255,255,0.05)'}} />
+                <Bar dataKey="avgGlucose" radius={[20, 20, 20, 20]} barSize={32}>
                   {monthlyStats.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.avgGlucose > 140 ? '#f43f5e' : '#3b82f6'} />
+                    <Cell key={`cell-${index}`} fill={entry.avgGlucose > 140 ? '#fb7185' : '#ffffff'} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
-   
-        {/* CONTRIBUTIONS HEATMAP */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <LayoutGrid className="text-emerald-600" size={20} />
-            <h3 className="font-bold text-slate-800">Logging Consistency</h3>
+
+        {/* --- HEATMAP SECTION --- */}
+        <div className="bg-white/40 backdrop-blur-2xl border border-white/60 rounded-[3rem] p-12 shadow-xl">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-xl font-serif italic text-slate-800">Logging Discipline</h3>
+            <LayoutGrid className="text-slate-300" size={20} />
           </div>
-          <div className="overflow-x-auto">
-            <div className="min-w-[800px] px-2">
+          <div className="overflow-x-auto pb-4">
+            <div className="min-w-[800px]">
               <CalendarHeatmap
                 startDate={new Date(new Date().setFullYear(new Date().getFullYear() - 1))}
                 endDate={new Date()}
                 values={contributions.map(c => ({ date: c._id, count: c.count }))}
-                classForValue={(value) => {
-                  if (!value) return 'color-empty';
-                  return `color-scale-${Math.min(value.count, 4)}`;
-                }}
+                classForValue={(v) => !v ? 'color-empty' : `color-scale-${Math.min(v.count, 4)}`}
               />
             </div>
           </div>
         </div>
       </main>
 
-      <Footer/> 
+      <Footer />
 
       <style>{`
-        .react-calendar-heatmap .color-empty { fill: #f1f5f9; }
-        .react-calendar-heatmap .color-scale-1 { fill: #d1fae5; }
-        .react-calendar-heatmap .color-scale-2 { fill: #6ee7b7; }
-        .react-calendar-heatmap .color-scale-3 { fill: #10b981; }
-        .react-calendar-heatmap .color-scale-4 { fill: #047857; }
-        .react-calendar-heatmap rect { rx: 2px; ry: 2px; }
+        .react-calendar-heatmap .color-empty { fill: #e2e8f0; }
+        .react-calendar-heatmap .color-scale-1 { fill: #ffe4e6; }
+        .react-calendar-heatmap .color-scale-2 { fill: #fecdd3; }
+        .react-calendar-heatmap .color-scale-3 { fill: #fda4af; }
+        .react-calendar-heatmap .color-scale-4 { fill: #fb7185; }
+        .react-calendar-heatmap rect { rx: 4px; ry: 4px; }
       `}</style>
     </div>
   );
 };
 
-// Reusable Sub-components
-const KPICard = ({ title, value, icon, color }) => (
-  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex items-center gap-4">
-    <div className={`p-3 rounded-xl ${
-      color === 'purple' ? 'bg-purple-50 text-purple-600' :
-      color === 'blue' ? 'bg-blue-50 text-blue-600' :
-      color === 'green' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'
+const KPICard = ({ title, value, unit, icon, color }) => (
+  <motion.div 
+    whileHover={{ y: -5 }}
+    className="bg-white/60 backdrop-blur-xl border border-white/80 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50"
+  >
+    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${
+      color === 'rose' ? 'bg-rose-50 text-rose-400' :
+      color === 'blue' ? 'bg-blue-50 text-blue-400' :
+      color === 'sage' ? 'bg-emerald-50 text-emerald-400' : 'bg-slate-100 text-slate-500'
     }`}>
-      {React.cloneElement(icon, { size: 24 })}
+      {React.cloneElement(icon, { size: 20 })}
     </div>
-    <div>
-      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{title}</p>
-      <h2 className="text-2xl font-black text-slate-900">{value}</h2>
+    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">{title}</p>
+    <div className="flex items-baseline gap-2">
+      <h2 className="text-3xl font-serif italic text-slate-900">{value}</h2>
+      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{unit}</span>
     </div>
-  </div>
+  </motion.div>
 );
 
 const RangeProgress = ({ label, count, total, color }) => {
   const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
   return (
     <div>
-      <div className="flex justify-between items-end mb-2">
-        <p className="text-xs font-bold text-slate-500 uppercase">{label}</p>
-        <span className="text-sm font-black text-slate-900">{percentage}%</span>
+      <div className="flex justify-between items-end mb-4">
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</p>
+        <span className="text-lg font-serif italic text-slate-800">{percentage}%</span>
       </div>
-      <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${percentage}%` }} />
+      <div className="h-3 w-full bg-white/50 rounded-full overflow-hidden shadow-inner border border-white">
+        <motion.div 
+          initial={{ width: 0 }} 
+          whileInView={{ width: `${percentage}%` }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className={`h-full rounded-full ${color}`} 
+        />
       </div>
     </div>
   );
 };
 
-const CustomTooltip = ({ active, payload, title, unit }) => {
+const CustomTooltip = ({ active, payload, title, unit, dark }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-xl">
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{title}</p>
-        <p className="text-lg font-black text-indigo-600">{payload[0].value}{unit}</p>
+      <div className={`${dark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-100 text-slate-900'} border p-4 rounded-3xl shadow-2xl`}>
+        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">{title}</p>
+        <p className="text-xl font-serif italic">{payload[0].value}{unit}</p>
       </div>
     );
   }
