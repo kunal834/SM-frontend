@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Authcontext } from '../../context/authcontext';
+import { Authcontext } from '../context/authcontext';
 import { 
   Flame, 
   History, 

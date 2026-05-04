@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Authcontext } from '../../context/authcontext';
+import { Authcontext } from '../context/authcontext';
 import { Mail, ArrowRight, ShieldCheck, Sparkles, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

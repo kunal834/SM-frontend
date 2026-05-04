@@ -1,7 +1,7 @@
 import React, { useState, useContext, useMemo } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Authcontext } from '../../context/authcontext';
+import { Authcontext } from '../context/authcontext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronLeft, 

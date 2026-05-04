@@ -3,12 +3,14 @@ import Login from './Pages/Login';
 import Navbar from './components/Navbar.jsx';
 import Dashboard from './Pages/Dashboard.jsx';
 import Addlog from './Pages/Addlog.jsx';
-import { Authcontext } from '../context/authcontext.jsx';
+import { Authcontext } from './context/authcontext.jsx';
 import { useContext } from 'react';
 import Homepage from './Pages/Homepage.jsx';
 import History from './Pages/History.jsx';
 import Analytic from './Pages/Analytic.jsx';
 import About from './Pages/About.jsx';
+import InstitutionalPayment from './Pages/pay.jsx';
+import Success from './Pages/success.jsx';
 
 function App() {
   const { Authuser }  = useContext(Authcontext);
@@ -32,7 +34,8 @@ function App() {
           <Route path="/History" element={<History />} />
           <Route path="/Analytic" element={<Analytic />} />
           <Route path="/About" element={<About />} />
-          
+          <Route path="/pay" element={<InstitutionalPayment hospitalId="HOSPITAL_123" />} />
+          <Route path="/success" element={<Success />} />
           {/* 404 Page (Optional) */}
           <Route path="*" element={<div className="text-center mt-20">Page Not Found</div>} />
         </Routes>

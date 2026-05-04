@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { Authcontext } from '../../context/authcontext';
+import { Authcontext } from '../context/authcontext';
 import { motion } from 'framer-motion';
 import { Clock, Download, FileText, Sparkles } from 'lucide-react';
 

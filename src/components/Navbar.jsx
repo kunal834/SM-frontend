@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Authcontext } from '../../context/authcontext';
+import { Authcontext } from '../context/authcontext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -30,7 +30,6 @@ const Navbar = () => {
   ];
 
   return (
-    // Fixed position with padding to create the "floating" effect
     <nav className="fixed top-4 inset-x-0 z-50 px-6 pointer-events-none">
       <div className="max-w-7xl mx-auto flex justify-center">
         <div className="w-full bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] rounded-[2.5rem] px-6 py-2 pointer-events-auto transition-all duration-500">
@@ -67,7 +66,18 @@ const Navbar = () => {
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4">
+                    {/* --- SUPPORT BUTTON (DESKTOP) --- */}
+                    <Link 
+                      to="/pay" 
+                      className="p-2 text-slate-400 hover:text-slate-600 transition-colors group relative"
+                      title="Support"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-12 transition-transform">
+                        <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                      </svg>
+                    </Link>
+
                     <Link 
                       to="/Addlog" 
                       className="group relative px-5 py-2.5 bg-rose-50 text-rose-600 rounded-full text-[13px] font-bold transition-all hover:bg-rose-100 active:scale-95"
@@ -88,12 +98,15 @@ const Navbar = () => {
                   </div>
                 </>
               ) : (
-                <Link 
-                  to="/login" 
-                  className="px-6 py-2.5 bg-slate-900 text-white rounded-full text-[13px] font-bold hover:shadow-xl transition-all active:scale-95"
-                >
-                  Sign In
-                </Link>
+                <div className="flex items-center gap-4">
+                  <Link to="/pay" className="text-[13px] font-medium text-slate-500 hover:text-slate-900 transition-colors">Support</Link>
+                  <Link 
+                    to="/login" 
+                    className="px-6 py-2.5 bg-slate-900 text-white rounded-full text-[13px] font-bold hover:shadow-xl transition-all active:scale-95"
+                  >
+                    Sign In
+                  </Link>
+                </div>
               )}
             </div>
 
@@ -141,6 +154,16 @@ const Navbar = () => {
                       {link.name}
                     </Link>
                   ))}
+                  
+                  {/* --- MOBILE SUPPORT LINK --- */}
+                  <Link 
+                    to="/pay"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-6 py-4 text-slate-500 text-lg font-serif italic"
+                  >
+                    Help & Support
+                  </Link>
+
                   <div className="pt-6 grid grid-cols-2 gap-3">
                     <Link 
                       to="/AddLog"
@@ -158,13 +181,22 @@ const Navbar = () => {
                   </div>
                 </div>
               ) : (
-                <Link 
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-bold"
-                >
-                  Sign In
-                </Link>
+                <div className="space-y-4">
+                   <Link 
+                    to="/pay"
+                    onClick={() => setIsOpen(false)}
+                    className="block text-center text-slate-500 font-medium"
+                  >
+                    Need Help?
+                  </Link>
+                  <Link 
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-bold"
+                  >
+                    Sign In
+                  </Link>
+                </div>
               )}
             </div>
           </motion.div>

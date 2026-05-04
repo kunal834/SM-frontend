@@ -3,7 +3,7 @@ import axios from  "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+export const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 axios.defaults.baseURL = backendUrl;
 axios.defaults.withCredentials = true; 
 export const Authcontext = createContext();
