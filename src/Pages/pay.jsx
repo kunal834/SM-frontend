@@ -17,12 +17,16 @@ const InstitutionalPayment = ({ hospitalId }) => {
     console.log(backendUrl)
     setLoading(true);
     try {
-     
-      const response = await fetch(`${backendUrl}/api/users/create-checkout-session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: Number(amount), username: hospitalId }),
-      });
+     const response = await fetch(`${backendUrl}/api/users/create-checkout-session`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ 
+    amount: Number(amount) * 100, // Polar/Stripe often use subunits (paise/cents)
+    product_id: 'your_polar_product_id', // Replace with your actual Product ID
+    success_url: window.location.origin + '/success',
+    customer_email: 'user@example.com' // Optional but recommended
+  }),
+});
       const data = await response.json();
       if (data.url) window.location.href = data.url;
       else throw new Error(data.error || "No checkout URL received.");
