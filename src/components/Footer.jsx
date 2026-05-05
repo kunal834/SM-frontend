@@ -28,28 +28,35 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-20 lg:gap-12">
           
-          {/* --- BRAND STORY --- */}
-          <div className="space-y-8 max-w-sm">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className=" p-1.5 rounded-xl shadow-lg">
-               <img src="/log.png" className="w-10 h-10 relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500" alt="Logo" />
-              </div>
-              <span className="text-2xl font-serif italic tracking-tight text-slate-800">
-                flytics
-              </span>
-            </Link>
-            
-            <p className="text-slate-500 font-medium text-sm leading-relaxed italic">
-              "Redefining metabolic clarity through the lens of calm. 
-              Tracking your rhythm should feel like a breath of fresh air."
-            </p>
+        {/* --- BRAND STORY --- */}
+<div className="space-y-8 max-w-sm">
+  <Link to="/" className="flex items-center gap-3 group">
+    <div className="relative">
+      {/* Subtle glow effect to match navbar style */}
+      <div className="absolute inset-0 bg-rose-200 rounded-full blur-md opacity-20 group-hover:opacity-50 transition-opacity" />
+      
+      <img 
+        src="/log.png" 
+        className="w-12 h-12 relative z-10 object-contain transition-transform duration-500 group-hover:scale-105" 
+        alt="Logo" 
+      />
+    </div>
+    <span className="text-2xl font-serif italic tracking-tight text-slate-800">
+      flytics
+    </span>
+  </Link>
+  
+  <p className="text-slate-500 font-medium text-sm leading-relaxed italic">
+    "Redefining metabolic clarity through the lens of calm. 
+    Tracking your rhythm should feel like a breath of fresh air."
+  </p>
 
-            <div className="flex gap-6 items-center">
-              <Heart size={16} className="text-rose-300" />
-              <Shield size={16} className="text-slate-300" />
-              <div className="h-px w-12 bg-slate-200" />
-            </div>
-          </div>
+  <div className="flex gap-6 items-center">
+    <Heart size={16} className="text-rose-300" />
+    <Shield size={16} className="text-slate-300" />
+    <div className="h-px w-12 bg-slate-200" />
+  </div>
+</div>
 
           {/* --- NAVIGATION GRID --- */}
           <div className="grid grid-cols-2 sm:grid-cols-2 gap-12 sm:gap-24">

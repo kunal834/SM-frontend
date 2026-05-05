@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Authcontext } from '../context/authcontext';
-import { Mail, ArrowRight, ShieldCheck, Sparkles, ChevronLeft } from 'lucide-react';
+import { Mail, ArrowRight, ShieldCheck, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const { login } = useContext(Authcontext);
@@ -46,12 +47,20 @@ const Login = () => {
           <div className="max-w-sm mx-auto w-full">
             
             <header className="mb-10 text-center lg:text-left">
-              <div className="flex items-center justify-center lg:justify-start gap-2 mb-6">
-                <div className="bg-slate-900 p-2 rounded-2xl shadow-lg">
-                  <Sparkles className="text-rose-300 w-5 h-5" />
+              {/* --- BRAND LOGO --- */}
+              <Link to="/" className="flex items-center justify-center lg:justify-start gap-3 mb-6 group inline-flex">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-rose-200 rounded-full blur-md opacity-20 group-hover:opacity-50 transition-opacity" />
+                  <img 
+                    src="/log.png" 
+                    className="w-12 h-12 relative z-10 object-contain transition-transform duration-500 group-hover:scale-105" 
+                    alt="Logo" 
+                  />
                 </div>
-                <span className="text-xl font-serif italic tracking-tight text-slate-800">flytics</span>
-              </div>
+                <span className="text-2xl font-serif italic tracking-tight text-slate-800">
+                  flytics
+                </span>
+              </Link>
 
               <AnimatePresence mode="wait">
                 {!isSent ? (
@@ -169,7 +178,7 @@ const Login = () => {
           <div className="relative z-10">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-rose-300/60 mb-8 block">Member Note</span>
             <blockquote className="text-3xl font-serif italic text-white leading-relaxed mb-10">
-              "Finally, a medical app that doesn't feel like a medical app. The calmest part of my morning routine."
+              Finally a medical app that doesn't feel like a medical app. The calmest part of my morning routine
             </blockquote>
             
             <div className="flex items-center gap-4">

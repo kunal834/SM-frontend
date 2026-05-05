@@ -36,15 +36,21 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-14">
             
             {/* --- BRAND LOGO --- */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="absolute inset-0 bg-rose-200 rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity" />
-                <img src="/log.png" className="w-10 h-10 relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500" alt="Logo" />
-              </div>
-              <span className="text-xl font-serif italic tracking-tight text-slate-800">
-                flytics
-              </span>
-            </Link>
+           <Link to="/" className="flex items-center gap-3 group">
+  <div className="relative">
+    {/* Subtle glow effect behind the logo */}
+    <div className="absolute inset-0 bg-rose-200 rounded-full blur-md opacity-20 group-hover:opacity-50 transition-opacity" />
+    
+    <img 
+      src="/log.png" 
+      className="w-12 h-12 relative z-10 object-contain transition-transform duration-500 group-hover:scale-105" 
+      alt="Logo" 
+    />
+  </div>
+  <span className="text-2xl font-serif italic tracking-tight text-slate-800">
+    flytics
+  </span>
+</Link>
 
             {/* --- DESKTOP MENU --- */}
             <div className="hidden md:flex space-x-1 items-center">
